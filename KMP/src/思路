@@ -1,0 +1,72 @@
+暴力匹配算法:
+    s1待搜索的字符串,s2为搜索条件
+    两个字符串,用s1头字符和s2头字符比对,相等就继续比对,不相等就从s1下一个字符开始比对
+
+KMP算法:
+    将s2字符串转换得到一个部分匹配表(前缀和后缀的长度)
+    比如: A   没有前缀和后缀   0
+         AB  前缀A,后缀B     0
+         ABA 前缀A和AB,后缀BA和A 相同的最大长度为 1
+         ABCDA 前缀A AB ABC ABCD,后缀A DA CDA BCDA 相同的最大长度为 1
+         ...
+         ABCDABD 对应的每一个索引的长度就为{0,0,0,0,1,2,0}
+    两个字符串,用s1头字符和s2头字符比对,相等就继续比对,不相等就不用从下一个字符比对,可以直接从 部分匹配表里 的 j=next[j-1] 开始匹配,i可以不用再重新回溯扫描
+kmp核心的代码:   while (j > 0 && s1.charAt(i) != s2.charAt(j)) {j = next[j - 1];}
+
+暴力匹配:
+    public static int violentMatch(String s1, String s2) {
+        for (int i = 0, j = 0; i < s1.length(); i++) {
+            // 暴力匹配 思考? -> 对于已经匹配上的一部分字符回溯的时候有必要再重新判断吗?
+            if (s1.charAt(i) != s2.charAt(j)) {
+                i = i - j + 1;
+                j = 0;
+            }
+            if (s1.charAt(i) == s2.charAt(j)) {
+                j++;
+            }
+            if (j == s2.length()) {
+                return i - j + 1;
+            }
+        }
+        return -1;
+    }
+kmp算法:
+     // 获取一个字符串的部分匹配值表
+        public static int[] kmpNext(String dest) {
+            // 创建一个next数组保存部分匹配值
+            int[] next = new int[dest.length()];
+            next[0] = 0;//如果字符串长度为1，部分匹配值就是0
+            for (int i = 1, j = 0; i < dest.length(); i++) {
+                // kmp算法的核心
+                while (j > 0 && dest.charAt(i) != dest.charAt(j)) {
+                    j = next[j - 1];
+                }
+                // 匹配字符相等，部分匹配值+1
+                // 如AAA 部分匹配值为2 前缀:A,AA 后缀:A,AA 相同的最大长度
+                if (dest.charAt(i) == dest.charAt(j)) {
+                    j++;
+                }
+                next[i] = j;
+            }
+            return next;
+        }
+
+        // kmp搜索
+        public static int kmpSearch(String s1, String s2, int[] next) {
+            for (int i = 0, j = 0; i < s1.length(); i++) {
+                // kmp核心算法
+                // 匹配字符不相等
+                while (j > 0 && s1.charAt(i) != s2.charAt(j)) {
+                    j = next[j - 1];
+                }
+                // 判断字符是否相等
+                if (s1.charAt(i) == s2.charAt(j)) {
+                    j++;
+                }
+                // 匹配完成返回索引
+                if (j == s2.length()) {
+                    return i - j + 1;
+                }
+            }
+            return -1;
+        }
