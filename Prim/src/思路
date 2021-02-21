@@ -1,0 +1,55 @@
+普利姆算法:修路路径最短问题(贪心算法:每次都选择最短的路径)
+    最小生成树
+
+    权值:  A  B  C  D  E  F  G
+      A {{N, 5, 7, N, N, N, 2},
+      B  {5, N, N, 9, N, N, 3},
+      C  {7, N, N, N, 8, N, N},
+      D  {N, 9, N, N, N, 4, N},
+      E  {N, N, 8, N, N, 5, 4},
+      F  {N, N, N, 4, 5, N, 6},
+      G  {2, 3, N, N, 4, 6, N}}
+
+    步骤:
+    从A顶点出发,此时所有路径为AB:5 AC:7 AG:2 此时最短路径为2 所以 A -2-> G
+    然后从A,G顶点出发,此时所有路径为AB:5 AC:7 GB:3 GE:4 GF:6 所以 G -3-> B
+    然后从A,G,B顶点出发,此时所有路径为AC:7 GE:4 GF:6 BD:9 所以 G -4-> E
+    然后从A,G,B,E顶点出发,此时所有路径为AC:7 GF:6 BD:9 EC:8 EF:5 所以 E -5-> F
+    然后从A,G,B,E,F顶点出发,此时所有路径为AC:7 BD:9 EC:8 FD:4 所以 F -4-> D
+    然后从A,G,B,E,F,D顶点出发,此时所有路径为AC:7 EC:8 所以 A -7-> C
+    此时A,G,B,E,F,D,C七个顶点都为最小路径,即最小生成树=2+3+4+5+4+7=25
+
+代码:
+    // 普里姆算法
+    public static int[] prim(Graph graph, char[] vertex, int[][] weight, int[] flag, int v) {
+        graph.vertex = vertex;
+        graph.weight = weight;
+        graph.flag = flag;
+        flag[v] = 0;
+        // 每次顶点的最小路径
+        int minPath;
+        // 下一个顶点,默认v
+        int temp = v;
+        // 最短路径的边一共为 顶点-1
+        for (int side = 1; side < vertex.length; side++) {
+            minPath = N;
+            // 每个走过的顶点的最短路径(包含第一个节点)
+            for (int i = 0; i < vertex.length; i++) {
+                if (i == v || flag[i] != 0) {
+                    // 找寻每个顶点相连的下一个顶点
+                    for (int j = 0; j < vertex.length; j++) {
+                        // 找到没有走过顶点的最小路径
+                        if (j != v && weight[i][j] < minPath && flag[j] == 0) {
+                            minPath = weight[i][j];
+                            temp = j;
+                        }
+                    }
+                }
+            }
+            // 赋值
+            if (minPath < N) {
+                flag[temp] = minPath;
+            }
+        }
+        return flag;
+    }

@@ -25,7 +25,7 @@ public class BroadcastRoom {
                 // 将allArea与temp的交集元素给temp
                 temp.retainAll(allArea);
                 // 贪心之处: 取交集元素最多的
-                if (temp.size() > 0 && temp.size() > maxKey) {
+                if (temp.size() > maxKey) {
                     // 赋值最优解广播站
                     tempStr = s;
                     // 赋值最优解广播站的个数
@@ -38,8 +38,6 @@ public class BroadcastRoom {
                 areas.add(tempStr);
                 // 删除已经加入的区域
                 allArea.removeAll(areaMap.get(tempStr));
-                // 删除已经加入的广播站
-                areaMap.remove(tempStr);
             }
         }
         return areas;
