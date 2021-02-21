@@ -17,10 +17,10 @@ public class Prim {
         for (int side = 1; side < vertex.length; side++) {
             minPath = N;
             // 每个走过的顶点的最短路径(包含第一个节点)
-            for (int i = 0; i < vertex.length; i++) {
+            for (int i = 0; i < weight.length; i++) {
                 if (i == v || flag[i] != 0) {
                     // 找寻每个顶点相连的下一个顶点
-                    for (int j = 0; j < vertex.length; j++) {
+                    for (int j = 0; j < weight[i].length; j++) {
                         // 找到没有走过顶点的最小路径
                         if (j != v && weight[i][j] < minPath && flag[j] == 0) {
                             minPath = weight[i][j];
@@ -44,7 +44,7 @@ public class Prim {
                 {N, N, N, 4, 5, N, 6}, {2, 3, N, N, 4, 6, N}};
         int[] flag = new int[vertex.length];
         Graph graph = new Graph(vertex.length);
-        int[] prim = prim(graph, vertex, weight, flag, 0);
+        int[] prim = prim(graph, vertex, weight, flag, 2);
         System.out.println(Arrays.toString(prim));
     }
 }
@@ -54,7 +54,7 @@ class Graph {
     char[] vertex;
     // 邻接矩阵
     int[][] weight;
-    // 判断顶点是否经过
+    // 顶点经过的最小路径权值
     int[] flag;
 
     public Graph(int vertexSize) {
